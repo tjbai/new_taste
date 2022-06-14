@@ -1,4 +1,3 @@
-# from rmn import RMN
 import numpy as np
 import pandas as pd
 import cv2
@@ -6,9 +5,10 @@ import base64
 import math
 import os
 from pathlib import Path
+import pprint
 # from deepface import DeepFace
 
-TEST_IMG = '../test-images/neutral.jpg'
+TEST_IMG = '../test-images/jehan-happy.jpg'
 
 CONFIG = './models/deploy.prototxt.txt'
 MODEL = './models/res10_300x300_ssd_iter_140000.caffemodel'
@@ -68,8 +68,10 @@ def detect_with_haar(image):
     return ct
 
 
-# Deprecated in favor of the deepface solution
+# deprecated...
 def detect_emotion_rmn(image):
+    from rmn import RMN
+
     m = RMN()
     image = cv2.imread(image)
     results = m.detect_emotion_for_single_frame(image)
@@ -83,16 +85,29 @@ def download_emotion_model():
         f"wget {model_url} -O ./models/facial_expression_model_weights.h5"
     )
 
-
 def detect_emotion_deepface(image):
-    # Config DEEPFACE_HOME path
     # os.environ.setdefault("DEEPFACE_HOME", "./models")
     # Path('./models').mkdir(parents = True, exist_ok = True)
     # download_emotion_model()
 
     from deepface import DeepFace
+
     obj = DeepFace.analyze(img_path=image, actions=['emotion'])
     return obj['emotion']
+
+
+# deprecated...
+def detect_emotion_fer(image):
+    from fer import FER
+    from fer.utils import draw_annotations
+
+    img = cv2.imread(image)
+    detector=FER()
+
+    res = detector.detect_emotions(img)
+    img = draw_annotations(img, res)
+
+    print(res)
 
 
 hsq2 = math.sqrt(2)/2
@@ -105,6 +120,7 @@ DIRS = { # Direction array for all 7 detected emotions
     'surprise': np.array([.5,.5]),
     'neutral': np.array([0,0])
 }
+
 # Converts emotion list into 2D valence-arousal vector
 def to_VA_score(emo_list):
     score = np.array([0.5,0.5])
@@ -114,12 +130,22 @@ def to_VA_score(emo_list):
 
 
 # Look for n-closest songs in R^2 by euclidean distance
-def recommend(VA_score, n):
+def recommend(VA_score, n, genre_filter):
+    # Create dataframe 
     df = pd.read_csv('../../music-data/VA_dataset.csv', encoding='utf-8')
-    song_score = df[['valence', 'energy']].to_numpy() # Isolate valence and energy columns
+
+    # If genre_filter is non-trivial, filter
+    if len(genre_filter) > 0:
+        genres = []
+        for g in genre_filter:
+            genres.append(g['label'])
+        df.query('genre in @genres', inplace = True)
+
+    # Isolate song and emotion matrices
+    song_score = df[['valence', 'energy']].to_numpy() 
     emo_score = np.tile(VA_score, (len(song_score), 1)) 
 
-    # Vectorized euclidean distance between emo_score and song_score
+    # Vectorized euclidean distance 
     res = np.linalg.norm(emo_score - song_score, axis = 1)
     indices = np.arange(1, len(res))
     sorted_indices = sorted(indices, key = lambda x: res[x])
@@ -133,7 +159,12 @@ def recommend(VA_score, n):
 
 
 if __name__ == '__main__':
-    detect_emotion_deepface(TEST_IMG)
+    values = ['happy', 'heavy-metal', 'r-n-b']
+    score = np.array([1,1])
+    n = 3;
+    recos = recommend(score, n, values)
+
+    print(recos)
 
 
     

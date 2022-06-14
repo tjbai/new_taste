@@ -18,7 +18,6 @@ def api():
     data = request.get_json()
     result = data['img'] # base64 encoded string
 
-
     b64 = bytes(result, 'utf-8') # bytes
     b64string = b64[b64.find(b'/9'):] # pulling out the string portion
     im = Image.open(io.BytesIO(base64.b64decode(b64string))) # open with Pillow
@@ -30,7 +29,11 @@ def api():
 
     # Emotions => recommendations
     emotion_score = to_VA_score(emotion_list)
-    recos = recommend(emotion_score, data['songCount'])
+    recos = recommend(
+        emotion_score, 
+        data['songCount'], 
+        data['genreFilter']
+    )
 
     return jsonify({
         'count': face_res[0],

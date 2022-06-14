@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 
-import { WebcamSource } from './Components/WebcamSource';
+import Body from './Components/Body';
 
 function App() {
   return (
     <div className="App">
-      <WebcamSource/> 
+      <header>HEAD</header>
+      <Body /> 
+      <footer>FOOT</footer>
     </div>
   );
 }

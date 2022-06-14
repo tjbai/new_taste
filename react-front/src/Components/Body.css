@@ -1,0 +1,17 @@
+.body {
+  display: flex;
+  flex-direction: column;
+}
+
+#canvas {
+  position: absolute;
+  z-index: 9;
+}
+
+#genreFilter {
+  width: 500px;
+}
+
+#detectButton {
+  width: 500px;
+}
