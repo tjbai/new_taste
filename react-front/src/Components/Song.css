@@ -1,0 +1,17 @@
+@import url("https://fonts.googleapis.com/css2?family=Fira+Sans&display=swap");
+
+.songIndicator {
+  box-shadow: 5px 5px 5px darkgreen;
+  transition: 0.2s;
+  font-family: "Fira Sans", sans-serif;
+}
+
+.songIndicator:hover {
+  transform: scale(1.02);
+  cursor: grab;
+}
+
+#tag {
+  text-decoration: none;
+  color: white;
+}

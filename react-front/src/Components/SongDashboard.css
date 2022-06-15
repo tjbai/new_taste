@@ -1,0 +1,8 @@
+#songDashboard {
+  box-shadow: 10px 10px 10px black;
+  transition: 0.2s;
+}
+
+#songDashboard:hover {
+  transform: scale(1.02);
+}

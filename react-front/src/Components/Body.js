@@ -7,15 +7,15 @@ import React, {
 import axios from 'axios';
 import Webcam from 'react-webcam';
 import * as ReactBootStrap from 'react-bootstrap'
-import Select from 'react-select';
 import * as tf from '@tensorflow/tfjs';
+import Select from 'react-select';
 import * as facemesh from '@tensorflow-models/facemesh';
 
-import './Body.css'
-import Results from './Results'
-import { drawMesh } from '../helper/mesh.js'
+import './Body.css';
+import ResultsDashboard from './ResultsDashboard';
 import { genres } from '../helper/constants.js'
-
+import { drawMesh } from '../helper/mesh.js';
+import { selectStyles } from '../helper/selectStyles'
 
 const OPTIONS = genres.map(genre => ({
     label: genre,
@@ -27,7 +27,6 @@ const VIDEO_CONST = {
     width: 500,
     facingMode: 'user'
 };
-
 const IMG_HEADER = 'data:image/jpeg;base64,'
 const SONG_COUNT = 3;
 const WIDTH = 500;
@@ -37,10 +36,11 @@ const HEIGHT = 500;
 const Body = () => {
     const wcRef = useRef(null); // Webcam ref
     const canvasRef = useRef(null); // Canvas ref
-
-    // Couple of hooks for state management
+    
     const [loading, setLoading] = useState(false); 
     const [genreFilter, setGenreFilter] = useState([]); 
+
+    // For the results dashboard
     const [detectState, setDetectState] = useState({
         faceCount: 0,
         faceImg: null,
@@ -102,42 +102,45 @@ const Body = () => {
         } catch (e) {
             console.log(e);
         }
-    }, [wcRef, genreFilter]); // Check this
+    }, [wcRef, genreFilter]); 
 
     useEffect(() => {
         runFacemesh();
-    }, [])
+    }, []) 
 
     return (
         <section className="body">
 
-            <Webcam 
-                id='webcam'
-                ref={wcRef} 
-                audio={false} 
-                width={WIDTH} 
-                height={HEIGHT} 
-                screenshotFormat='image/jpeg' 
-                mirrored={true}
-                videoConstraints={VIDEO_CONST} 
-            />
+            <div id='camBackground' >
+                <Webcam 
+                    id='webcam'
+                    ref={wcRef} 
+                    audio={false} 
+                    width={WIDTH} 
+                    height={HEIGHT} 
+                    screenshotFormat='image/jpeg' 
+                    mirrored={true}
+                    videoConstraints={VIDEO_CONST} 
+                />
 
-            <canvas
-                id='canvas'
-                width={WIDTH}
-                height={HEIGHT}
-                ref={canvasRef}
-            />
+                <canvas
+                    id='canvas'
+                    width={WIDTH}
+                    height={HEIGHT}
+                    ref={canvasRef}
+                />
+            </div>
 
-            <Select
+            <Select 
                 id='genreFilter'
-                placeholder={'Any'}
+                placeholder={'Give me anything!'}
                 options={OPTIONS}
                 isMulti={true}
                 onChange={(e) => {
                     setGenreFilter(e)
                 }}
-            />  
+                styles={selectStyles}
+            />
 
             <button 
                 id='detectButton'
@@ -146,7 +149,7 @@ const Body = () => {
 
             {loading 
             ? (<ReactBootStrap.Spinner animation='border' />) 
-            : (<Results state={detectState} />) }
+            : (<ResultsDashboard state={detectState} />) }
 
         </section>
     )

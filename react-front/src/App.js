@@ -6,9 +6,8 @@ import Body from './Components/Body';
 function App() {
   return (
     <div className="App">
-      <header>HEAD</header>
+      <header>Please center your face in the webcam</header>
       <Body /> 
-      <footer>FOOT</footer>
     </div>
   );
 }

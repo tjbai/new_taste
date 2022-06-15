@@ -1,13 +1,23 @@
+@import url("https://fonts.googleapis.com/css2?family=Fira+Sans&display=swap");
+
 .App {
   height: 100vh;
   width: 100vw;
   margin: 0;
   display: flex;
   flex-direction: column;
+  background-color: #23272a;
 }
 
 header {
-  background-color: beige;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #23272a;
+  color: white;
+  padding-top: 20px;
+  padding-bottom: 15px;
+  font-family: "Fira Sans", sans-serif;
 }
 
 footer {
