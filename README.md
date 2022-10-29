@@ -14,7 +14,7 @@
 ## How it works
 1. On the frontend, we use TensorflowJS' facemesh model to identify landmarks on the user's face (mainly just to look cool)
 2. On detect, a multi-task cascaded convolutional network (MTCNN) checks that a face is present in the image and annotates it.
-3. The image is passed to a deep neural network (DNN), courtesy of DeepFace, which produces a list of each emotion and its associated score, which sums to 1.
+3. The image is passed to a deep neural network, courtesy of DeepFace, which produces a list of each emotion and its associated score, which sums to 1.
 4. This emotion vector is then converted to a "valence-arousal" score, via some linear algebra and other fun stuff.
 5. We then scan the database of songs (~11,500 via Spotify Web API), filtering for the interested genres and sorting by euclidean distance from the user's valence-arousal score.
 6. The top 3 songs are returned!
